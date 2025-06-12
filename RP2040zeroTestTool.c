@@ -17,6 +17,9 @@
 #include "hardware/sync.h"  // Needed for save_and_disable_interrupts, restore_interrupts
 #include "pico/multicore.h" // Needed for multicore functions (e.g., multicore_launch_core1)
 
+#include <conio.h>          // Use <termios.h> and related functions for Linux
+
+
 // led color definitions
 uint32_t red          = 0x0000FF00; // Red
 uint32_t green        = 0x00FF0000; // Green
@@ -69,6 +72,8 @@ uint32_t pastelGreen  = 0x0090EE90; // Pale Green
 #define MOVE_CURSOR_8       "\033[8G"      // Move cursor 8 spaces
 #define MOVE_CURSOR_9       "\033[9G"      // Move cursor 9 spaces
 
+#define VAR_COUNT 3
+#define MAX_LEN 100
 
 bool updatingMenu = false; // Flag to indicate if the menu is being updated
 
@@ -113,6 +118,23 @@ char label26[7] = "GP26";   // Label for pin 26
 char label27[7] = "GP27";   // Label for pin 27
 char label28[7] = "GP28";   // Label for pin 28
 char label29[7] = "GP29";   // Label for pin 29
+
+
+const char* labelNames[] = {
+    "label00", "label01", "label02", "label03", "label04", "label05",
+    "label06", "label07", "label08", "label09", "label10", "label11",
+    "label12", "label13", "label14", "label15", "label16", "label17",
+    "label18", "label19", "label20", "label21", "label22", "label23",
+    "label24", "label25", "label26", "label27", "label28", "label29"
+};
+
+const char* labelValues[] = {
+    "AX0", "AX1", "AX2", "AY0", "AY1", "AY2",
+    "data", "strobe", "EN1", "EN2", "Reset", "GP11",
+    "TX", "RX", "GP14", "GP15", "LED", "GP17",
+    "GP18", "GP19", "GP20", "GP21", "GP22", "GP23",
+    "GP24", "GP25", "GP26", "GP27", "GP28", "GP29"
+};
 
 
 #define WS2812_PIN 16
@@ -160,6 +182,41 @@ void gpio_get_dir_all(){
 }
 
  
+
+
+int editlables() {
+
+    int current = 0;
+    char input[MAX_LEN];
+
+    while (1) {
+        system("cls");  // Use "clear" instead for Linux/macOS
+        printf("Use ↑/↓ to move, Enter to edit, q to quit\n\n");
+
+        for (int i = 0; i < VAR_COUNT; i++) {
+            if (i == current) printf("-> ");
+            else printf("   ");
+            printf("%s = \"%s\"\n", labelsNames[i], labelValues[i]);
+        }
+
+        int ch = _getch();
+        if (ch == 'q') break;
+        if (ch == 224) {  // Special key
+            ch = _getch();
+            if (ch == 72 && current > 0) current--;       // Up
+            else if (ch == 80 && current < VAR_COUNT - 1) current++; // Down
+        } else if (ch == 13) {  // Enter key
+            printf("\nNew value for %s: ", labelsNames[current]);
+            fgets(input, MAX_LEN, stdin);
+            input[strcspn(input, "\n")] = '\0';  // Remove newline
+            strncpy(vars[current], input, MAX_LEN - 1);
+        }
+    }
+
+    return 0;
+}
+
+
 
 void displayFunctionMenu(){
 
