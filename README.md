@@ -8,7 +8,7 @@ This is an small attempt to give me a lot of those features with terminal output
 So it lacks the pollish, but is for me helpull testing small project.
 
 
-<img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040-zero.gif)" width7200 height600>
+<img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040-zero.gif)" width7200 height600> 
 
 <p>&nbsp</p>
 
