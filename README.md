@@ -8,15 +8,11 @@ This is an small attempt to give me a lot of those features with terminal output
 So it lacks the pollish, but is for me helpull testing small project.
 
 
-
-[RP2040-zero-TestTool](/images/rp2040-zero.jpg)
-
-
+<img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/rp2040-zero.jpg)" width7200 height600>
 
 <p>&nbsp</p>
 
 <img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040zeroTestTool.gif" width7200 height600>
-
 
 
 
