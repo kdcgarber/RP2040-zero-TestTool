@@ -18,7 +18,8 @@
 #include "pico/multicore.h" // Needed for multicore functions (e.g., multicore_launch_core1)
 
 #include <conio.h>          // Use <termios.h> and related functions for Linux
-
+#include "hardware/flash.h"
+#include "hardware/sync.h"
 
 // led color definitions
 uint32_t red          = 0x0000FF00; // Red
@@ -75,6 +76,7 @@ uint32_t pastelGreen  = 0x0090EE90; // Pale Green
 #define VAR_COUNT 3
 #define MAX_LEN 100
 
+
 bool updatingMenu = false; // Flag to indicate if the menu is being updated
 
 char *inputLocation = MOVE_CURSOR_25_8; // Set the input location to line 25, column 8
@@ -119,6 +121,9 @@ char label27[7] = "GP27";   // Label for pin 27
 char label28[7] = "GP28";   // Label for pin 28
 char label29[7] = "GP29";   // Label for pin 29
 
+#define FLASH_TARGET_OFFSET (256 * 1024) // Offset for storage
+#define ARRAY_SIZE 30                    // Number of labels
+#define STRING_SIZE 7                     // Max label length
 
 const char* labelNames[] = {
     "label00", "label01", "label02", "label03", "label04", "label05",
@@ -128,7 +133,8 @@ const char* labelNames[] = {
     "label24", "label25", "label26", "label27", "label28", "label29"
 };
 
-const char* labelValues[] = {
+
+const char* defaultLabelValues[] = {  // Default values if flash is empty
     "AX0", "AX1", "AX2", "AY0", "AY1", "AY2",
     "data", "strobe", "EN1", "EN2", "Reset", "GP11",
     "TX", "RX", "GP14", "GP15", "LED", "GP17",
@@ -136,9 +142,21 @@ const char* labelValues[] = {
     "GP24", "GP25", "GP26", "GP27", "GP28", "GP29"
 };
 
+char labelValues[ARRAY_SIZE][STRING_SIZE]; // Mutable array for reading/writing
+
 
 #define WS2812_PIN 16
 #define NUM_LEDS 1
+
+
+
+
+
+
+// -------------------- code -----------------------------------------
+
+
+
 
 void set_ws2812_color(uint32_t color) {
     pio_sm_put_blocking(pio0, 0, color << 8u);
@@ -389,11 +407,54 @@ void triggerMenu() {
 }
 
 
+
+
+void write_to_flash() {
+    uint32_t ints = save_and_disable_interrupts(); // Disable interrupts while writing
+
+    // Erase sector before writing
+    flash_range_erase(FLASH_TARGET_OFFSET, FLASH_PAGE_SIZE);
+    flash_range_program(FLASH_TARGET_OFFSET, (const uint8_t*)labelValues, sizeof(labelValues));
+
+    restore_interrupts(ints); // Restore interrupts
+    //printf("Data written to flash!\n");
+}
+
+void read_from_flash() {
+    const char* flash_data = (const char*)(XIP_BASE + FLASH_TARGET_OFFSET);
+
+    // Validate flash contents (checking first bytes)
+    if (flash_data[0] == 0xFF) {  // Flash is empty (unwritten state)
+        printf("No valid data in flash. Using default labels.\n");
+
+        // Copy default values into labelValues[]
+        for (int i = 0; i < ARRAY_SIZE; i++) {
+            snprintf(labelValues[i], STRING_SIZE, "%s", defaultLabelValues[i]);
+        }
+    } else {
+        printf("Reading data from flash...\n");
+
+        // Copy stored flash data into labelValues[]
+        for (int i = 0; i < ARRAY_SIZE; i++) {
+            snprintf(labelValues[i], STRING_SIZE, "%s", flash_data + (i * STRING_SIZE));
+        }
+    }
+}
+
+
+
+
+
+
 void main() {
   int64_t delay_us = 5000000; // Negative value means "start-to-start" timing, positive value means "start-to-end" timing
   struct repeating_timer timer;
 
   stdio_init_all();
+
+  // Read stored data or use defaults if none exists
+  read_from_flash();
+
   stdio_usb_init(); // Initialize USB standard input
 
   sleep_ms (5000); // Wait for 5 seconds to allow USB to initialize
