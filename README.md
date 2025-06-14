@@ -1,6 +1,6 @@
 ![RP2040-zero-TestTool](/images/trs-80MotherboardKeyBoard3.jpg?rawtrue "Header")
 
-# RP2040-zero-TestTool
+# RP2040-zero-TestTool  <img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040-zero.gif" width=300 height=200> 
 This is used as a test harness for a RP2040-zero and connecting it to other I/O.
 I needed a small tool to enable me to turn on or read any GPIO port.
 I saw a cool version with a web interface that does more for a Raspberry Pi Pico W or any with wifi.  (https://github.com/sysprogs/PicoHTTPServer/)
@@ -25,7 +25,7 @@ Just type a GPIO number or one of the menu entries and it will auto enter when t
 There is a bitmask string also displayed for the mask values if you are in need of it in code to set the series of bits in a single command.
 
 
-<img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040-zero.gif" width=300 height=200> 
+
 
 <p>&nbsp</p>
 
