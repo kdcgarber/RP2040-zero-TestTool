@@ -28,7 +28,7 @@ This is just a test breadboard I used to validate the software to ensure I/O wor
 
 Pinout for the RP2040-zero
 
-<img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040zero-pinout.gif" width=650 height=700>
+<img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040zero-pinout.gif" width=750 height=700>
 
 <pre>
 </pre>
