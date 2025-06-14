@@ -16,7 +16,7 @@ So it lacks the pollish, but is for me helpull testing small project.
 
 
 
-<img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/breadboardtesting.jpg" width=1000 height=400>
+<img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/breadboardtesting.jpg" width=200 height=400>
 
 <pre>
 </pre>
