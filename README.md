@@ -18,7 +18,7 @@ So it lacks the polish, but is for me helpful testing small project.
 <img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040zeroLabels.gif" width=7200 height=400>
 
 
-This is just a test breadboard I used to validate the software to ensure I/O works in both directions and that the tool labels are configureable correctly.
+This is just a test breadboard I used to validate the software to ensure I/O works in both directions and that the tool labels are configurable  correctly.
 
 <img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/breadboardtesting.jpg" width=350 height=400>
 
