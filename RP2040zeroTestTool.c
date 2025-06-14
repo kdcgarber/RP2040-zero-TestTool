@@ -17,7 +17,7 @@
 #include "hardware/sync.h"  // Needed for save_and_disable_interrupts, restore_interrupts
 #include "pico/multicore.h" // Needed for multicore functions (e.g., multicore_launch_core1)
 
-#include <conio.h>          // Use <termios.h> and related functions for Linux
+//#include <conio.h>          // Use <termios.h> and related functions for Linux
 #include "hardware/flash.h"
 #include "hardware/sync.h"
 
@@ -61,6 +61,7 @@ uint32_t pastelGreen  = 0x0090EE90; // Pale Green
 #define CLEAR_SCREEN        "\033[2J"         // Clear entire screen
 #define CLEAR_SCROLLBACK    "\033[3J"         // Clear scrollback buffer
 
+#define MOVE_CURSOR_2_0   "\033[2;0H"     // Move cursor to line 2, column 0
 #define MOVE_CURSOR_24_0   "\033[24;0H"     // Move cursor to line 24, column 0
 #define MOVE_CURSOR_24_8   "\033[24;8H"      // Move cursor to line 24, column 8
 #define MOVE_CURSOR_25_0   "\033[25;0H"     // Move cursor to line 25, column 0
@@ -73,8 +74,7 @@ uint32_t pastelGreen  = 0x0090EE90; // Pale Green
 #define MOVE_CURSOR_8       "\033[8G"      // Move cursor 8 spaces
 #define MOVE_CURSOR_9       "\033[9G"      // Move cursor 9 spaces
 
-#define VAR_COUNT 3
-#define MAX_LEN 100
+
 
 
 bool updatingMenu = false; // Flag to indicate if the menu is being updated
@@ -90,72 +90,47 @@ uint32_t dir_mask = ((1UL << 30) - 1); // bits for all GPIOs 0-29
 //#define GPIO_MASK_0 (1UL << 30)        // Mask for GPIOs 0–29 
 
 
-char label00[7] = "AX0";   // Label for pin 0
-char label01[7] = "AX1";   // Label for pin 1
-char label02[7] = "AX2";   // Label for pin 2
-char label03[7] = "AY0";   // Label for pin 3
-char label04[7] = "AY1";   // Label for pin 4
-char label05[7] = "AY2";   // Label for pin 5
-char label06[7] = "data";   // Label for pin 6
-char label07[7] = "strobe"; // Label for pin 7
-char label08[7] = "EN1";    // Label for pin 8
-char label09[7] = "EN2";    // Label for pin 9
-char label10[7] = "Reset";  // Label for pin 10
-char label11[7] = "GP11";   // Label for pin 11
-char label12[7] = "TX";     // Label for pin 12
-char label13[7] = "RX";     // Label for pin 13
-char label14[7] = "GP14";   // Label for pin 14
-char label15[7] = "GP15";   // Label for pin 15
-char label16[7] = "LED";   // Label for pin 16
-char label17[7] = "GP17";   // Label for pin 17
-char label18[7] = "GP18";   // Label for pin 18
-char label19[7] = "GP19";   // Label for pin 19
-char label20[7] = "GP20";   // Label for pin 20
-char label21[7] = "GP21";   // Label for pin 21
-char label22[7] = "GP22";   // Label for pin 22
-char label23[7] = "GP23";   // Label for pin 23
-char label24[7] = "GP24";   // Label for pin 24
-char label25[7] = "GP25";   // Label for pin 25
-char label26[7] = "GP26";   // Label for pin 26
-char label27[7] = "GP27";   // Label for pin 27
-char label28[7] = "GP28";   // Label for pin 28
-char label29[7] = "GP29";   // Label for pin 29
 
 #define FLASH_TARGET_OFFSET (256 * 1024) // Offset for storage
 #define ARRAY_SIZE 30                    // Number of labels
 #define STRING_SIZE 7                     // Max label length
+#define VAR_COUNT 30
+
 
 const char* labelNames[] = {
-    "label00", "label01", "label02", "label03", "label04", "label05",
-    "label06", "label07", "label08", "label09", "label10", "label11",
-    "label12", "label13", "label14", "label15", "label16", "label17",
-    "label18", "label19", "label20", "label21", "label22", "label23",
-    "label24", "label25", "label26", "label27", "label28", "label29"
-};
-
-
-const char* defaultLabelValues[] = {  // Default values if flash is empty
-    "AX0", "AX1", "AX2", "AY0", "AY1", "AY2",
-    "data", "strobe", "EN1", "EN2", "Reset", "GP11",
-    "TX", "RX", "GP14", "GP15", "LED", "GP17",
-    "GP18", "GP19", "GP20", "GP21", "GP22", "GP23",
+    "GP00", "GP01", "GP02", "GP03", "GP04", "GP05", "GP06", "GP07", "GP08", "GP09", "GP10", "GP11",
+    "GP12", "GP13", "GP14", "GP15", "LED", "GP17", "GP18", "GP19", "GP20", "GP21", "GP22", "GP23",
     "GP24", "GP25", "GP26", "GP27", "GP28", "GP29"
 };
 
-char labelValues[ARRAY_SIZE][STRING_SIZE]; // Mutable array for reading/writing
 
+
+//#define MYCONFIG  // test my loading of my values - comment out this line to use the normal default values
+#ifdef MYCONFIG
+char* defaultLabelValues[] = {  // Default values if flash is empty
+    "AX0", "AX1", "AX2", "AY0", "AY1", "AY2", "data", "strobe", "EN1", "EN2", "Reset", "GP11",
+    "TX", "RX", "GP14", "GP15", "LED", "GP17", "GP18", "GP19", "GP20", "GP21", "GP22", "GP23",
+    "GP24", "GP25", "GP26", "GP27", "GP28", "GP29"
+};
+#else
+char * defaultLabelValues[] = {  // Default values if flash is empty
+    "GP00", "GP01", "GP02", "GP03", "GP04", "GP05", "GP06", "GP07", "GP08", "GP09", "GP10", "GP11",
+    "GP12", "GP13", "GP14", "GP15", "LED", "GP17", "GP18", "GP19", "GP20", "GP21", "GP22", "GP23",
+    "GP24", "GP25", "GP26", "GP27", "GP28", "GP29"
+};
+#endif
+
+char labelValues[ARRAY_SIZE][STRING_SIZE]; // Mutable array for reading/writing
 
 #define WS2812_PIN 16
 #define NUM_LEDS 1
 
-
+bool core1Wait = false; // Flag to indicate if Core 1 is waiting
 
 
 
 
 // -------------------- code -----------------------------------------
-
-
 
 
 void set_ws2812_color(uint32_t color) {
@@ -192,7 +167,6 @@ void setupAllPins(){
   gpio_set_dir_masked(GPIO_MASK_1, GPIO_MASK_1);  // Set them as outputs
 }
 
-
 void gpio_get_dir_all(){
   for (int pin = 0; pin < 30; pin++) {  // Only checking the first 30 GPIOs
     dir_mask |= (gpio_get_dir(pin) << pin);  // Shift direction bit into mask
@@ -200,40 +174,125 @@ void gpio_get_dir_all(){
 }
 
  
+void cleanInput(char *input) {
+    char temp[STRING_SIZE] = {0};
+    int j = 0;
+    input[strcspn(input, "\n")] = '\0';   // Remove newline
 
-
-int editlables() {
-
-    int current = 0;
-    char input[MAX_LEN];
-
-    while (1) {
-        system("cls");  // Use "clear" instead for Linux/macOS
-        printf("Use ↑/↓ to move, Enter to edit, q to quit\n\n");
-
-        for (int i = 0; i < VAR_COUNT; i++) {
-            if (i == current) printf("-> ");
-            else printf("   ");
-            printf("%s = \"%s\"\n", labelsNames[i], labelValues[i]);
-        }
-
-        int ch = _getch();
-        if (ch == 'q') break;
-        if (ch == 224) {  // Special key
-            ch = _getch();
-            if (ch == 72 && current > 0) current--;       // Up
-            else if (ch == 80 && current < VAR_COUNT - 1) current++; // Down
-        } else if (ch == 13) {  // Enter key
-            printf("\nNew value for %s: ", labelsNames[current]);
-            fgets(input, MAX_LEN, stdin);
-            input[strcspn(input, "\n")] = '\0';  // Remove newline
-            strncpy(vars[current], input, MAX_LEN - 1);
+    for (int i = 0; input[i] != '\0'; i++) {
+        if (isprint((unsigned char)input[i]) && input[i] != ' ') {
+            temp[j++] = input[i];  // Copy only printable ASCII characters, excluding spaces
         }
     }
-
-    return 0;
+    temp[j] = '\0';  // Null-terminate the cleaned string
+    strncpy(input, temp, STRING_SIZE - 1);
 }
 
+
+void write_to_flash() {
+    uint32_t ints = save_and_disable_interrupts(); // Disable interrupts while writing
+
+    // Erase sector before writing
+    flash_range_erase(FLASH_TARGET_OFFSET, FLASH_PAGE_SIZE);
+    flash_range_program(FLASH_TARGET_OFFSET, (const uint8_t*)labelValues, sizeof(labelValues));
+
+    restore_interrupts(ints); // Restore interrupts
+    //printf("Data written to flash!\n");
+}
+
+void read_from_flash() {
+    const char* flash_data = (const char*)(XIP_BASE + FLASH_TARGET_OFFSET);
+    //printf("Flash - Reading data---%i\n",flash_data[0]);
+     // Validate flash contents (checking first bytes)
+    if (flash_data[0] < 0x20) {  // Flash is empty (unwritten state) or requested to rewrite new 
+        printf("No valid data in flash. Using default labels and writing.\n");
+        sleep_ms(1000); // Wait for 2 seconds before clearing the screen
+        // Copy default values into labelValues[]
+        for (int i = 0; i < ARRAY_SIZE; i++) {
+            snprintf(labelValues[i], STRING_SIZE, "%s", defaultLabelValues[i]);
+        }
+        write_to_flash(); // Write default values to flash
+    }
+    //printf("Reading data from flash...\n");
+    //sleep_ms(1000); 
+    // Copy stored flash data into labelValues[]
+    for (int i = 0; i < ARRAY_SIZE; i++) {
+        snprintf(labelValues[i], STRING_SIZE, "%s", flash_data + (i * STRING_SIZE));
+    }
+}
+
+
+
+void editLabels() {
+    int current = 0;
+    char input[STRING_SIZE];
+    printf(CLEAR); // Clear screen
+    char ch = ' ';
+    int index = 0; // Index for input string
+
+    while (ch != 'e') {                                                                         // e - Exit 
+      printf(HIDE_CURSOR); // Hide cursor
+      printf(HOME);  // Move cursor to top-left
+      printf("↑ and ↓ , 'c' change label, 's' save, 'e' exit, 'r' reload defaults\n\n");
+
+      // Print two columns: 0-14 left, 15-29 right
+      for (int i = 0; i < 15; i++) {
+          int right = i + 15;
+          printf("%-5s = \"%-6s\"%s    ",  labelNames[i], labelValues[i], (i == current) ? "  <---" : "      ");
+          if (right < VAR_COUNT) {
+              printf("%-5s = \"%-6s\"%s",  labelNames[right], labelValues[right], (right == current) ? "  <---" : "      ");
+          }
+          printf("\n");
+      }
+
+      ch = getchar();  
+      
+      if (ch == '\033') { // Detect ESC sequence to handle arrow keys
+          getchar(); // Skip '['
+          ch = getchar(); // Get actual key
+          if (ch == 'A' && current > 0) current--;                                              // ↑ - Up arrow
+          else if (ch == 'B' && current < VAR_COUNT - 1) current++;                             // ↓ - Down arrow
+      } else if (ch == 's' ) {                                                                  // s - save
+          write_to_flash(); // Write default values to flash
+          printf(MOVE_CURSOR_2_0);
+          printf("Saved");
+          sleep_ms(300);
+          printf(MOVE_CURSOR_2_0);
+          printf("      ");
+      } else if (ch == 'r' ) {                                                                  // r - reload default label data
+          for (int i = 0; i < ARRAY_SIZE; i++) {
+              snprintf(labelValues[i], STRING_SIZE, "%s", defaultLabelValues[i]);
+          }
+      } else if (ch == 'c' ) {                                                                  // c - Change label
+          printf(MOVE_CURSOR_2_0);
+          printf(SHOW_CURSOR);
+          printf("New value for %s: ", labelNames[current]);
+
+          index = 0;                   // Reset index before input
+          memset(input, 0, sizeof(input)); // Clear input buffer
+
+          while (index < sizeof(input) - 1) { // Ensure space for null-terminator
+              ch = getchar();
+              if (ch == '\n' || ch == '\r') break;  // Stop input on Enter
+
+              if (ch == 127 || ch == '\b') { // Handle backspace (ASCII 127 or '\b')
+                  if (index > 0) {
+                      index--;
+                      printf("\b \b"); // Move cursor back, print space, move back again
+                      input[index] = '\0'; // Remove last character
+                  }
+              } else if (isprint((unsigned char)ch)) {
+                  putchar(ch);  // Echo character back
+                  input[index++] = ch;
+              }
+          }
+          input[index] = '\0';  // Properly terminate string
+          cleanInput(input);                    // Remove spaces and non-ASCII characters
+          strncpy(labelValues[current], input, STRING_SIZE - 1);
+          printf(CLEAR); // Clear screen
+      }
+    }
+}
 
 
 void displayFunctionMenu(){
@@ -253,35 +312,33 @@ void displayFunctionMenu(){
   printf(HIDE_CURSOR);  // Hides the cursor
   printf(BRIGHT_WHITE); // Set text color to bright white 
 
-  printf(AQUA"ON:All High"OFF"> <"AQUA"CL:All Low"OFF"> <"AQUA"digit GP number"OFF">      "LIGHT_GREEN"Green"OFF" = High \n");
+  printf(AQUA"<ON:All High"OFF"> <"AQUA"CL:All Low"OFF"> <"AQUA"ED:edit labels"OFF"> <"AQUA"digit GP number"OFF">\n");
+  printf("                                                 "LIGHT_GREEN"Green"OFF" = High \n");
+  printf("                                                 White = Low\n");
 
-  printf("                                                    White = Low\n");
-
-  printf("\n        BitMask:");
+  printf("        BitMask:");
   for (int i = 29; i >= 0; i--) {  printf("%d", (gpio_values >> i) & 1);}
 
   printf("\n");
   printf("        ┌────────────────────────────────────┐\n" );
   printf("        │              RP2040-Zero           │\n");
-  printf("        │5v                              %-4s│-%-6s \n",((gpio_values >> 0) & 1) ? LIGHT_GREEN"GP00"OFF : "GP00" , label00);
-  printf("        │GND           * GND             %-4s│-%-6s \n",((gpio_values >> 1) & 1)  ? LIGHT_GREEN"GP01"OFF : "GP01" , label01);
-  printf("        │3V3    %6s-*%-4s             %-4s│-%-6s \n",label25, ((gpio_values >> 25) & 1) ? LIGHT_GREEN"GP25"OFF : "GP25", ((gpio_values >> 2) & 1)  ? LIGHT_GREEN"GP02"OFF : "GP02" ,label02);
-  printf(" %6s-│%-4s   %6s-*%-4s             %-4s│-%-6s \n",label29, ((gpio_values >> 29) & 1)? LIGHT_GREEN"GP29"OFF : "GP29",label24, ((gpio_values >> 24) & 1) ? LIGHT_GREEN"GP24"OFF : "GP24", ((gpio_values >> 3) & 1) ? LIGHT_GREEN"GP03"OFF : "GP03", label03 );
-  printf(" %6s-│%-4s   %6s-*%-4s             %-4s│-%-6s \n",label28, ((gpio_values >> 28) & 1) ? LIGHT_GREEN"GP28"OFF : "GP28",label23, ((gpio_values >> 23) & 1) ? LIGHT_GREEN"GP23"OFF : "GP23", ((gpio_values >> 4) & 1)? LIGHT_GREEN"GP04"OFF : "GP04", label04 );
-  printf(" %6s-│%-4s   %6s-*%-4s             %-4s│-%-6s \n",label27, ((gpio_values >> 27) & 1) ? LIGHT_GREEN"GP27"OFF : "GP27",label22, ((gpio_values >> 22) & 1) ? LIGHT_GREEN"GP22"OFF : "GP22", ((gpio_values >> 5) & 1) ? LIGHT_GREEN"GP05"OFF : "GP05", label05 );  
-  printf(" %6s-│%-4s   %6s-*%-4s             %-4s│-%-6s \n",label26, ((gpio_values >> 26) & 1) ? LIGHT_GREEN"GP26"OFF : "GP26",label21,((gpio_values >> 21) & 1) ? LIGHT_GREEN"GP21"OFF : "GP21", ((gpio_values >> 6) & 1) ? LIGHT_GREEN"GP06"OFF : "GP06", label06 );
-  printf(" %6s-│%-4s   %6s-*%-4s             %-4s│-%-6s \n",label15, ((gpio_values >> 15) & 1) ? LIGHT_GREEN"GP15"OFF : "GP15",label20, ((gpio_values >> 20) & 1) ? LIGHT_GREEN"GP20"OFF : "GP20", ((gpio_values >> 7) & 1) ? LIGHT_GREEN"GP07"OFF : "GP07", label07 );
-  printf(" %6s-│%-4s   %6s-*%-4s             %-4s│-%-6s \n",label14, ((gpio_values >> 14) & 1) ? LIGHT_GREEN"GP14"OFF : "GP14",label19, ((gpio_values >> 19) & 1) ? LIGHT_GREEN"GP19"OFF : "GP19", ((gpio_values >> 8) & 1) ? LIGHT_GREEN"GP08"OFF : "GP08", label08 );
-  printf("        │       %6s-*%-4s                 │\n",label18, ((gpio_values >> 18) & 1) ? LIGHT_GREEN"GP18"OFF : "GP18");
-  printf("        │       %6s-*%-4s                 │\n",label17, ((gpio_values >> 17) & 1) ? LIGHT_GREEN"GP17"OFF : "GP17");
-  printf("        │       %6s-*%-4s                 │\n",label16, (ledColor != off) ? LIGHT_GREEN"GP16"OFF : "GP16");
+  printf("        │5v                              %-4s│-%-6.6s \n",((gpio_values >> 0) & 1) ? LIGHT_GREEN"GP00"OFF : "GP00" , labelValues[0]);
+  printf("        │GND           * GND             %-4s│-%-6.6s \n",((gpio_values >> 1) & 1)  ? LIGHT_GREEN"GP01"OFF : "GP01" , labelValues[1]);
+  printf("        │3V3    %6.6s-*%-4s             %-4s│-%-6.6s \n",labelValues[25], ((gpio_values >> 25) & 1) ? LIGHT_GREEN"GP25"OFF : "GP25", ((gpio_values >> 2) & 1)  ? LIGHT_GREEN"GP02"OFF : "GP02" ,labelValues[2]);
+  printf(" %6.6s-│%-4s   %6.6s-*%-4s             %-4s│-%-6.6s \n",labelValues[29], ((gpio_values >> 29) & 1)? LIGHT_GREEN"GP29"OFF : "GP29",labelValues[24], ((gpio_values >> 24) & 1) ? LIGHT_GREEN"GP24"OFF : "GP24", ((gpio_values >> 3) & 1) ? LIGHT_GREEN"GP03"OFF : "GP03", labelValues[3] );
+  printf(" %6.6s-│%-4s   %6.6s-*%-4s             %-4s│-%-6.6s \n",labelValues[28], ((gpio_values >> 28) & 1) ? LIGHT_GREEN"GP28"OFF : "GP28",labelValues[23], ((gpio_values >> 23) & 1) ? LIGHT_GREEN"GP23"OFF : "GP23", ((gpio_values >> 4) & 1)? LIGHT_GREEN"GP04"OFF : "GP04", labelValues[4] );
+  printf(" %6.6s-│%-4s   %6.6s-*%-4s             %-4s│-%-6.6s \n",labelValues[27], ((gpio_values >> 27) & 1) ? LIGHT_GREEN"GP27"OFF : "GP27",labelValues[22], ((gpio_values >> 22) & 1) ? LIGHT_GREEN"GP22"OFF : "GP22", ((gpio_values >> 5) & 1) ? LIGHT_GREEN"GP05"OFF : "GP05", labelValues[5] );  
+  printf(" %6.6s-│%-4s   %6.6s-*%-4s             %-4s│-%-6.6s \n",labelValues[26], ((gpio_values >> 26) & 1) ? LIGHT_GREEN"GP26"OFF : "GP26",labelValues[21],((gpio_values >> 21) & 1) ? LIGHT_GREEN"GP21"OFF : "GP21", ((gpio_values >> 6) & 1) ? LIGHT_GREEN"GP06"OFF : "GP06", labelValues[6] );
+  printf(" %6.6s-│%-4s   %6.6s-*%-4s             %-4s│-%-6.6s \n",labelValues[15], ((gpio_values >> 15) & 1) ? LIGHT_GREEN"GP15"OFF : "GP15",labelValues[20], ((gpio_values >> 20) & 1) ? LIGHT_GREEN"GP20"OFF : "GP20", ((gpio_values >> 7) & 1) ? LIGHT_GREEN"GP07"OFF : "GP07", labelValues[7] );
+  printf(" %6.6s-│%-4s   %6.6s-*%-4s             %-4s│-%-6.6s \n",labelValues[14], ((gpio_values >> 14) & 1) ? LIGHT_GREEN"GP14"OFF : "GP14",labelValues[19], ((gpio_values >> 19) & 1) ? LIGHT_GREEN"GP19"OFF : "GP19", ((gpio_values >> 8) & 1) ? LIGHT_GREEN"GP08"OFF : "GP08", labelValues[8] );
+  printf("        │       %6.6s-*%-4s                 │\n",labelValues[18], ((gpio_values >> 18) & 1) ? LIGHT_GREEN"GP18"OFF : "GP18");
+  printf("        │       %6.6s-*%-4s                 │\n",labelValues[17], ((gpio_values >> 17) & 1) ? LIGHT_GREEN"GP17"OFF : "GP17");
+  printf("        │       %6.6s-*%-4s                 │\n",labelValues[16], (ledColor != off) ? LIGHT_GREEN"GP16"OFF : "GP16");
   printf("        │                                    │\n");
   printf("        │  %-4s   %-4s   %-4s   %-4s   %-4s  │\n" ,  ((gpio_values >> 13) & 1) ? LIGHT_GREEN"GP13"OFF : "GP13", ((gpio_values >> 12) & 1) ? LIGHT_GREEN"GP12"OFF : "GP12", ((gpio_values >> 11) & 1) ? LIGHT_GREEN"GP11"OFF : "GP11", ((gpio_values >> 10) & 1)? LIGHT_GREEN"GP10"OFF : "GP10" , ((gpio_values >> 9) & 1) ? LIGHT_GREEN"GP9"OFF : "GP9");
- 
-
   printf("        └───┬──────┬──────┬──────┬──────┬────┘\n" );
   printf("            │      │      │      │      │\n");
-  printf("           %-6.6s %-6.6s %-6.6s %-6.6s %-6.6s\n",label13,label12,label11,label10,label09);
+  printf("           %-6.6s %-6.6s %-6.6s %-6.6s %-6.6s\n",labelValues[13],labelValues[12],labelValues[11],labelValues[10],labelValues[9]);
   printf("\n"); // Extra new lines for spacing to clear the input line
 
 
@@ -364,6 +421,13 @@ void readFunctionMenu(){
       gpio_set_mask(GPIO_MASK_1); // Set all GPIOs to high
       set_ws2812_color(ledColorChoice);
       ledColor=ledColorChoice;
+    } else if (strcmp(choice, "ED") == 0) {
+      core1Wait=true;
+      sleep_ms(100); // Wait for a short time to ensure core 1 is paused
+      editLabels(); // Call the function to edit labels
+      printf(CLEAR); // Clear screen
+      core1Wait=false;
+      ledColor=ledColorChoice;
     } else {
       char *endptr;
       int intChoice = strtol(choice, &endptr, 10); // Convert string to integer
@@ -399,50 +463,13 @@ void readFunctionMenu(){
 
 
 void triggerMenu() {
-
   while (true){
-      displayFunctionMenu(); // Call the function to display the menu
+      if ( !core1Wait ) {   // do it while Core 1 is not paused
+        displayFunctionMenu(); // Call the function to display the menu
+      }
       sleep_ms(1000); // Wait for 1 second before checking again
   }
 }
-
-
-
-
-void write_to_flash() {
-    uint32_t ints = save_and_disable_interrupts(); // Disable interrupts while writing
-
-    // Erase sector before writing
-    flash_range_erase(FLASH_TARGET_OFFSET, FLASH_PAGE_SIZE);
-    flash_range_program(FLASH_TARGET_OFFSET, (const uint8_t*)labelValues, sizeof(labelValues));
-
-    restore_interrupts(ints); // Restore interrupts
-    //printf("Data written to flash!\n");
-}
-
-void read_from_flash() {
-    const char* flash_data = (const char*)(XIP_BASE + FLASH_TARGET_OFFSET);
-
-    // Validate flash contents (checking first bytes)
-    if (flash_data[0] == 0xFF) {  // Flash is empty (unwritten state)
-        printf("No valid data in flash. Using default labels.\n");
-
-        // Copy default values into labelValues[]
-        for (int i = 0; i < ARRAY_SIZE; i++) {
-            snprintf(labelValues[i], STRING_SIZE, "%s", defaultLabelValues[i]);
-        }
-    } else {
-        printf("Reading data from flash...\n");
-
-        // Copy stored flash data into labelValues[]
-        for (int i = 0; i < ARRAY_SIZE; i++) {
-            snprintf(labelValues[i], STRING_SIZE, "%s", flash_data + (i * STRING_SIZE));
-        }
-    }
-}
-
-
-
 
 
 
@@ -451,16 +478,16 @@ void main() {
   struct repeating_timer timer;
 
   stdio_init_all();
-
-  // Read stored data or use defaults if none exists
-  read_from_flash();
-
   stdio_usb_init(); // Initialize USB standard input
-
   sleep_ms (5000); // Wait for 5 seconds to allow USB to initialize
 
   // Initialize GPIO pins  
   setupAllPins();
+
+  // Read stored data or use defaults if none exists
+  read_from_flash();
+
+
 
   PIO pio = pio0;
   int sm = 0;
