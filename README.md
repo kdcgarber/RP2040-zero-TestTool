@@ -15,6 +15,8 @@ So it lacks the polish, but is for me helpful testing small project.
 
 <img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040zeroTestTool.gif" width=7200 height=600>
 
+Label edit screen
+
 <img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040zeroLabels.gif" width=7200 height=400>
 
 
@@ -26,7 +28,7 @@ This is just a test breadboard I used to validate the software to ensure I/O wor
 
 Pinout for the RP2040-zero
 
-<img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040zero-pinout.gif" width=350 height=400>
+<img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040zero-pinout.gif" width=650 height=700>
 
 <pre>
 </pre>
