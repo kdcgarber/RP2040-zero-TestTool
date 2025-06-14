@@ -1,6 +1,6 @@
 ![RP2040-zero-TestTool](/images/trs-80MotherboardKeyBoard3.jpg?rawtrue "Header")
 
-# RP2040-zero-TestTool  <img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040-zero.gif" width=300 height=200> 
+# RP2040-zero-TestTool  <img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040-zero.gif" width=150 height=100> 
 This is used as a test harness for a RP2040-zero and connecting it to other I/O.
 I needed a small tool to enable me to turn on or read any GPIO port.
 I saw a cool version with a web interface that does more for a Raspberry Pi Pico W or any with wifi.  (https://github.com/sysprogs/PicoHTTPServer/)
