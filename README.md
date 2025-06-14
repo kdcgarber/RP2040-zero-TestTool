@@ -22,6 +22,12 @@ This is just a test breadboard I used to validate the software to ensure I/O wor
 
 <img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/breadboardtesting.jpg" width=350 height=400>
 
+
+
+Pinout for the RP2040-zero
+
+<img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040zero-pinout.gif" width=350 height=400>
+
 <pre>
 </pre>
 
