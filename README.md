@@ -2,7 +2,7 @@
 
 This application is used as a test harness for a RP2040-zero and connecting it to other I/O.
 
-I needed a small tool to enable me to turn on or read any GPIO port for a project I was working on and wanted to test before writting the specific code for my pcb creation.
+I needed a small tool to enable me to turn on or read any GPIO port for a project I was working on and wanted to test before writing the specific code for my pcb creation.
 I saw a cool version with a web interface that does more for a Raspberry Pi Pico W using wifi.  (https://github.com/sysprogs/PicoHTTPServer/)
 This is an small attempt to give me a lot of those features with terminal input/output instead of a web interface,
 So, it lacks the polish but is for me helpful testing small projects.
