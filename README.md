@@ -1,30 +1,29 @@
 ![RP2040-zero-TestTool](/images/trs-80MotherboardKeyBoard3.jpg?rawtrue "Header")
 
-# RP2040-zero-TestTool  <img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040-zero.gif" width=150 height=100> 
-This is used as a test harness for a RP2040-zero and connecting it to other I/O.
-I needed a small tool to enable me to turn on or read any GPIO port.
-I saw a cool version with a web interface that does more for a Raspberry Pi Pico W or any with wifi.  (https://github.com/sysprogs/PicoHTTPServer/)
-This is an small attempt to give me a lot of those features with terminal output instead of a web interface,
+This application is used as a test harness for a RP2040-zero and connecting it to other I/O.
+
+I needed a small tool to enable me to turn on or read any GPIO port for a project I was working on and wanted to test before writting the specific code for my pcb creation.
+I saw a cool version with a web interface that does more for a Raspberry Pi Pico W using wifi.  (https://github.com/sysprogs/PicoHTTPServer/)
+This is an small attempt to give me a lot of those features with terminal input/output instead of a web interface,
 So, it lacks the polish but is for me helpful testing small projects.
 
 The C code is provided (RP2040zeroTestTool.c) that can be compiled or edited as needed.  I've also put a compiled version, the RP2040zerTestTool.uf2.
 That file can be placed on the RP by pressing the boot and reset button to open a Windows file manager window and then dragging the ‘.uf2’ file to that mounted drive.
-When it’s placed on the RP, it will boot to the program, and you can view it via a terminal program like putty connecting it to its com port.
+When it’s placed on the RP, it will boot to the program, and you can view its output via a terminal program, like putty, connecting it to its com port.
 
-The terminl window should display a representation of the RP2040-Zero and the GPIO ports.  There is a menu at the top <br>
-<ON:All High> 		- ON sets all the pins to 1<br>
-<CL:All Low>  		- CL sets all the pins to 0<br>
+The terminl window should display a representation of the RP2040-Zero and the GPIO ports.  The screen refreshes every second to reflect input changes to a GPIO port.<br>
+There is a menu at the top <br>
+<ON:All High> 		- ON sets all the pins to 1 <br>
+<CL:All Low>  		- CL sets all the pins to 0 <br>
 <ED:edit labels>	- ED brings up the edit label screen which allows label configuration for all pins labels <br>
-<digit GP number>	- Enter a 2-digit GPIO port number and that pin will toggle between On and off (0/1)<br>
-  Green = High		 - The name of the GPIO will turn green when it has been turned to a 1 or if the GPIO is held HIGH by a power source<br>
-  White = Low		- The name of the GPIO will turn white when the port is LOW, a 0<br>
+<digit GP number>	- Enter a 2-digit GPIO port number and that pin will toggle between On and off (0/1) <br>
+  Green = High		 - The name of the GPIO will turn green when it has been turned to a 1 or if the GPIO is held HIGH by a power source <br>
+  White = Low		- The name of the GPIO will turn white when the port is LOW, a 0 <br>
 
 The LED on the board is GP16 and can be toggled on or off by entering 16 at Input:
 Just type a GPIO number or one of the menu entries and it will auto enter when the second character is entered.
 
 There is a bitmask string also displayed for the mask values if you are in need of it in code to set the series of bits in a single command.
-
-
 
 
 <p>&nbsp</p>
