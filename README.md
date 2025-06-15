@@ -14,10 +14,10 @@ When it’s placed on the RP, it will boot to the program, and you can view its ou
 The terminl window should display a representation of the RP2040-Zero and the GPIO ports.  The screen refreshes every second to reflect input changes to a GPIO port.<br><br>
 <pre>
 There is a menu at the top <br>
-<ON:All High> 		- ON sets all the pins to 1 
-<CL:All Low>  		- CL sets all the pins to 0 
-<ED:edit labels>	- ED brings up the edit label screen which allows label configuration for all pins labels 
-<digit GP number>	- Enter a 2-digit GPIO port number and that pin will toggle between On and off (0/1) 
+\<ON:All High\> 		- ON sets all the pins to 1 
+\<CL:All Low\>  		- CL sets all the pins to 0 
+\<ED:edit labels\>	- ED brings up the edit label screen which allows label configuration for all pins labels 
+\<digit GP numbe\r>	- Enter a 2-digit GPIO port number and that pin will toggle between On and off (0/1) 
   Green = High		- The name of the GPIO will turn green when it has been turned to a 1 or if the GPIO is held HIGH by a power source 
   White = Low		- The name of the GPIO will turn white when the port is LOW, a 0 
 </pre>
