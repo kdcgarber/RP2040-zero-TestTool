@@ -11,14 +11,14 @@ The C code is provided (RP2040zeroTestTool.c) that can be compiled or edited as 
 That file can be placed on the RP by pressing the boot and reset button to open a Windows file manager window and then dragging the ‘.uf2’ file to that mounted drive.
 When it’s placed on the RP, it will boot to the program, and you can view its output via a terminal program, like putty, connecting it to its com port.
 
-The terminl window should display a representation of the RP2040-Zero and the GPIO ports.  The screen refreshes every second to reflect input changes to a GPIO port.<br>
+The terminl window should display a representation of the RP2040-Zero and the GPIO ports.  The screen refreshes every second to reflect input changes to a GPIO port.<br><br>
 There is a menu at the top <br>
 <ON:All High> 		- ON sets all the pins to 1 <br>
 <CL:All Low>  		- CL sets all the pins to 0 <br>
 <ED:edit labels>	- ED brings up the edit label screen which allows label configuration for all pins labels <br>
 <digit GP number>	- Enter a 2-digit GPIO port number and that pin will toggle between On and off (0/1) <br>
-  Green = High		 - The name of the GPIO will turn green when it has been turned to a 1 or if the GPIO is held HIGH by a power source <br>
-  White = Low		- The name of the GPIO will turn white when the port is LOW, a 0 <br>
+<p>&nbsp</p><p>&nbsp</p> Green = High		- The name of the GPIO will turn green when it has been turned to a 1 or if the GPIO is held HIGH by a power source <br>
+<p>&nbsp</p><p>&nbsp</p> White = Low		- The name of the GPIO will turn white when the port is LOW, a 0 <br><br>
 
 The LED on the board is GP16 and can be toggled on or off by entering 16 at Input:
 Just type a GPIO number or one of the menu entries and it will auto enter when the second character is entered.
