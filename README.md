@@ -21,7 +21,7 @@ There is a menu at the top <br>
   Green = High		- The name of the GPIO will turn green when it has been turned to a 1 or if the GPIO is held HIGH by a power source 
   White = Low		- The name of the GPIO will turn white when the port is LOW, a 0 
 </pre>
-The LED on the board is GP16 and can be toggled on or off by entering 16 at Input:
+The onboard LED is tied to GP16 and can be toggled on or off by entering 16 at the Input: prompt.
 Just type a GPIO number or one of the menu entries and it will auto enter when the second character is entered.
 
 There is a bitmask string also displayed for the mask values if you are in need of it in code to set the series of bits in a single command.
