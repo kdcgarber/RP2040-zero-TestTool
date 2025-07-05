@@ -1,17 +1,17 @@
 ![RP2040-zero-TestTool](/images/trs-80MotherboardKeyBoard3.jpg?rawtrue "Header")
 
-This application is used as a test harness for a RP2040-zero and connecting it to other I/O.
+This application serves as a test harness for a RP2040-zero and connecting it to other I/O.
 
 I needed a small tool to enable me to turn on or read any GPIO port for a project I was working on and wanted to test before writing the specific code for my pcb creation.
 I saw a cool version with a web interface that does more for a Raspberry Pi Pico W using wifi.  (https://github.com/sysprogs/PicoHTTPServer/)
-This is an small attempt to give me a lot of those features with terminal input/output instead of a web interface,
+This is n small attempt to give me a lot of those features with terminal input/output instead of a web interface,
 So, it lacks the polish but is for me helpful testing small projects.
 
 The C code is provided (RP2040zeroTestTool.c) that can be compiled or edited as needed.  I've also put a compiled version, the RP2040zerTestTool.uf2.
 That file can be placed on the RP by pressing the boot and reset button to open a Windows file manager window and then dragging the ‘.uf2’ file to that mounted drive.
 When it’s placed on the RP, it will boot to the program, and you can view its output via a terminal program, like putty, connecting it to its com port.
 
-The terminl window should display a representation of the RP2040-Zero and the GPIO ports.  The screen refreshes every second to reflect input changes to a GPIO port.<br><br>
+The terminal window should display a representation of the RP2040-Zero and the GPIO ports.  The screen refreshes every second to reflect input changes to a GPIO port.<br><br>
 <pre>
 There is a menu at the top <br>
 &ltON:All High&gt		- ON sets all the pins to 1 
