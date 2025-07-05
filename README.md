@@ -5,7 +5,8 @@ This application serves as a test harness for a RP2040-zero and connecting it to
 I needed a small tool to enable me to turn on or read any GPIO port for a project I was working on and wanted to test before writing the specific code for my pcb creation.
 I saw a cool version with a web interface that does more for a Raspberry Pi Pico W using wifi.  (https://github.com/sysprogs/PicoHTTPServer/)
 This is n small attempt to give me a lot of those features with terminal input/output instead of a web interface,
-So, it lacks the polish but is for me helpful testing small projects.
+The board I'm working with does not have wifi or bluetooth available for a web interface.
+This implementations look lacks all the polish, but is for me a helpful testing tool for  small projects.
 
 The C code is provided (RP2040zeroTestTool.c) that can be compiled or edited as needed.  I've also put a compiled version, the RP2040zerTestTool.uf2.
 That file can be placed on the RP by pressing the boot and reset button to open a Windows file manager window and then dragging the ‘.uf2’ file to that mounted drive.
