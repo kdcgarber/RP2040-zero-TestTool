@@ -29,11 +29,11 @@ There is a bitmask string also displayed for the mask values if you are in need 
 
 
 
-<img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040zeroTestTool.gif" width=7200 height=600><br><br>
+<img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040zeroTestTool.gif" width=720 height=600><br><br>
 
 Label edit screen
 
-<img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040zeroLabels.gif" width=7200 height=400><br><br>
+<img src="https://github.com/kdcgarber/RP2040-zero-TestTool/blob/main/images/RP2040zeroLabels.gif" width=700 height=400><br><br>
 
 
 This is just a test breadboard I used to validate the software to ensure I/O works in both directions and that the tool labels are configurable  correctly.
